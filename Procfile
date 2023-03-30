@@ -1,1 +1,1 @@
-web: gunicorn newspill.wsgi
+web: gunicorn np.wsgi
