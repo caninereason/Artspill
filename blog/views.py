@@ -1,7 +1,21 @@
 from django.shortcuts import render, get_object_or_404
 from django.views import generic, View
+from django.http import HttpResponseRedirect
 from .models import Post
 from .forms import CommentForm
+
+
+class PostLike(View):
+
+    def get(self,request,slug):
+        post = get_object_or_404(Post,slug=slug)
+
+        if post.likes.filter(id=request.user.id).exists():
+             post.likes.remove(request.user)
+        else:
+            post.likes.add(request.user)
+        
+        return HttpResponseRedirect(reverse('post_detail', args=[slug]))
 
 
 class PostList(generic.ListView):
