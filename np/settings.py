@@ -34,7 +34,7 @@ INSTALLED_APPS = [
     'cloudinary_storage'
     'django.contrib.staticfiles',
     'cloudinary'
-    'np'
+    'newspill'
 ]
 
 MIDDLEWARE = [
