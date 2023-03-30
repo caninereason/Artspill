@@ -1,0 +1,15 @@
+asgiref
+cloudinary
+dj-database-url
+dj3-cloudinary-storage
+Django
+django-allauth
+django-summernote
+gunicorn
+oauthlib
+psycopg2
+PyJWT
+python3-openid
+pytz
+requests-oauthlib
+sqlparse
