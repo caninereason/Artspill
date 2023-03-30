@@ -3,7 +3,7 @@ name: Issues
 about: USER STORIES
 title: USER STORY
 labels: ''
-assignees: ''
+assignees: caninereason
 
 ---
 
