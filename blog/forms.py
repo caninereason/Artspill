@@ -17,7 +17,7 @@ class PostForm(forms.ModelForm):
 
             attrs={
 
-                "placeholder": "Express Yourself",
+                "placeholder": "Express Yourself","status" : "published",
                           }
         ),
         label="",
@@ -28,5 +28,5 @@ class PostForm(forms.ModelForm):
     class Meta:
 
         model = Post
-
-        exclude = ("user","slug", "author", "status", "likes","excerpt",)
+        
+        exclude = ("user", "author",  "likes","excerpt","slug",)

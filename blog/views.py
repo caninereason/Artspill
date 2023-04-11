@@ -12,9 +12,10 @@ class addPost(View):
         form = PostForm(data=request.POST, files=request.FILES)
         form.instance.author = request.user
         form.instance.author_name = request.user.username
+      
         if form.is_valid():
             form.save()
-            return redirect('home')
+            return HttpResponseRedirect(reverse('home'))
         else:
             form = PostForm()
             errormsg = 'Oops, something went wrong!'
