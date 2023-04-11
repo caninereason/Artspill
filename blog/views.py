@@ -1,8 +1,28 @@
 from django.shortcuts import render, get_object_or_404, reverse
 from django.views import generic, View
+from django.views.generic import ListView
 from django.http import HttpResponseRedirect
 from .models import Post
-from .forms import CommentForm
+from .forms import CommentForm, PostForm
+
+
+class addPost(View):
+
+    def post(self, request, *args, **kwargs):
+        form = PostForm(data=request.POST, files=request.FILES)
+        form.instance.author = request.user
+        form.instance.author_name = request.user.username
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+        else:
+            form = PostForm()
+            errormsg = 'Oops, something went wrong!'
+            return render(request, "post.html", {'form': form, 'errormsg': errormsg})
+
+    def get(self, request, *args, **kwargs):
+        form = PostForm()
+        return render(request, "post.html", {'form': form})
 
 
 class PostLike(View):

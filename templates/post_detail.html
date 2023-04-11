@@ -50,8 +50,6 @@
                         <!-- The number of likes goes before the closing strong tag -->
                         <span class="text-secondary">{{ post.number_of_likes }} </span>
                         </strong>
-                        <!-- The number of likes goes before the closing strong tag -->
-                        <strong class="text-secondary"><i class="far fa-heart"></i> {{ post.number_of_likes }} </strong>
                     </div>
                     <div class="col-1">
                         {% with comments.count as total_comments %}
@@ -99,7 +97,6 @@
                     Your comment is awaiting approval
                 </div>
                 {% else %}
-                
                 {% if user.is_authenticated %}
 
                 <h3>Leave a comment:</h3>
