@@ -27,9 +27,20 @@
                                 <h2 class="card-title">{{ post.title }}</h2>
                                 <p class="card-text">{{ post.excerpt }}</p>
                             </a>
-                            <hr />
+                           
                             <p class="card-text text-muted h6">{{ post.created_on}} <i class="far fa-heart"></i>
-                                {{ post.number_of_likes }}</p>
+                                {{ post.number_of_likes }} 
+                             
+                            {% if request.user == post.author %}
+                            <form action="{% url 'delete_post' post.slug %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="post_id" value="{{ post.pk }}">
+                                <button type="submit">Delete post</button>
+                            </form>
+                            
+                              </form><i class="fa fa-bomb"></i>
+                            {% endif %}</p>
+                                
                         </div>
                     </div>
                 </div>

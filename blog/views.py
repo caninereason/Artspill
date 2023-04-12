@@ -1,9 +1,22 @@
-from django.shortcuts import render, get_object_or_404, reverse
+from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.views import generic, View
-from django.views.generic import ListView
-from django.http import HttpResponseRedirect
+from django.views.generic import ListView, DeleteView
+from django.http import HttpResponseRedirect, HttpResponse
+from django.contrib import messages
+
 from .models import Post
 from .forms import CommentForm, PostForm
+
+
+
+class PostDeleteView(View):
+
+    def post(self, request, slug):
+        post = get_object_or_404(Post, slug=slug)
+        post.delete()
+        messages.success(request, 'Post deleted!')
+        return redirect('home')
+        
 
 
 class addPost(View):
@@ -15,7 +28,7 @@ class addPost(View):
       
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('home'))
+            return redirect('home')
         else:
             form = PostForm()
             errormsg = 'Oops, something went wrong!'
@@ -25,6 +38,13 @@ class addPost(View):
         form = PostForm()
         return render(request, "post.html", {'form': form})
 
+    
+    # def delete_post(request, pk):
+    #     post = get_object_or_404(Post, pk=pk)
+    #     if request.method == 'POST':
+    #         post.delete()
+    #         return redirect('post_list')
+    #     return render(request, "delete_post.html", {'post': post})
 
 class PostLike(View):
 
@@ -45,6 +65,7 @@ class PostList(generic.ListView):
     template_name = 'index.html'
     paginate_by = 6
 
+    
 
 class PostDetail(View):
 
@@ -100,4 +121,7 @@ class PostDetail(View):
                     "liked":liked
                     
                 },
+
+    
             )
+    
