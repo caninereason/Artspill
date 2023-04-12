@@ -3,9 +3,36 @@ from django.views import generic, View
 from django.views.generic import ListView, DeleteView
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib import messages
-
-from .models import Post
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
+from .models import  Post, Comment
 from .forms import CommentForm, PostForm, EditForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+
+class ProfileView(LoginRequiredMixin, View):
+    template_name = 'profile.html'
+
+    def get(self, request, *args, **kwargs):
+        # Filter the posts that belong to the currently authenticated user,
+        # and order them by the `created_on` field in descending order
+        posts = Post.objects.filter(author=request.user).order_by('-created_on')
+        
+        # Collect all the comments for the user's posts
+        comments = Comment.objects.filter(post__in=posts).order_by('-created_on')
+        
+        # Create a context dictionary that will be used to render the response
+        # The `posts` key maps to the `posts` queryset we just created
+        # The `comments` key maps to the `comments` queryset we just created
+        context = {'posts': posts, 'comments': comments}
+        
+        # Render the response using the `profile.html` template and the `context` dictionary
+        # The `request` argument is used to get the current request object
+        # The `template_name` argument is used to specify which template to use
+        # The `context` argument is used to pass data to the template
+        return render(request, self.template_name, context)
+
+
 
 class EditPostView(View):
     form_class = PostForm

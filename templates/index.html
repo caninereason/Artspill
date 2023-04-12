@@ -40,7 +40,7 @@
                             <form action="{% url 'edit_post' post.slug %}" method="POST">
                                 {% csrf_token %}
                                 {{ form.as_p }}
-                                <button type="submit">Save</button>
+                                <button type="submit">Edit</button>
                             </form>
                               
                             {% endif %}</p>
