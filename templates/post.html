@@ -2,12 +2,17 @@
 
 {% block content %}
 
-
-<form method="post">
-<div>
-    {{ form.as_p }}
-    {% csrf_token %}
-    <button type="submit">Create</button>
-</div>
-</form>
+{% if request.user == post.author %}
+    <form method="post">{{ form.as_p }}
+        {% csrf_token %}
+        <button type="submit">Save</button></form>
+{% else %}
+    <form method="post">
+        <div>
+            {{ form.as_p }}
+            {% csrf_token %}
+            <button type="submit">Create</button>
+        </div>
+    </form>
+{% endif %}
 {% endblock content %}

@@ -5,7 +5,25 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib import messages
 
 from .models import Post
-from .forms import CommentForm, PostForm
+from .forms import CommentForm, PostForm, EditForm
+
+class EditPostView(View):
+    form_class = PostForm
+    template_name = 'post.html'
+
+    
+
+    def post(self, request, slug, *args, **kwargs):
+        post = get_object_or_404(Post, slug=slug)
+        form = self.form_class(request.POST or None, instance=post)
+        if form.is_valid():
+            form.save()
+            return redirect('post_detail', slug=post.slug)
+        else:
+            form = self.form_class(instance=post) # re-initialize the form with the instance if it's not valid
+        return render(request, self.template_name, {'form': form, 'post': post})
+
+
 
 
 
@@ -37,6 +55,15 @@ class addPost(View):
     def get(self, request, *args, **kwargs):
         form = PostForm()
         return render(request, "post.html", {'form': form})
+
+    # def edit_post(self, request, slug):
+    #     post = get_object_or_404(Post, slug=slug)
+    #     form = EditForm(request.POST or None, instance=post, initial={'title': post.title, 'comment': post.comment})
+    
+    #     if form.is_valid():
+    #         form.save()
+    #     return redirect('post_detail', slug=post.slug)
+    #     return render(request, 'post.html', {'form': form, 'post': post})
 
     
     # def delete_post(request, pk):

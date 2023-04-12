@@ -35,10 +35,14 @@
                             <form action="{% url 'delete_post' post.slug %}" method="POST">
                                 {% csrf_token %}
                                 <input type="hidden" name="post_id" value="{{ post.pk }}">
-                                <button type="submit">Delete post</button>
+                                <button type="submit"><i class="fa fa-bomb"></i>
                             </form>
-                            
-                              </form><i class="fa fa-bomb"></i>
+                            <form action="{% url 'edit_post' post.slug %}" method="POST">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+                                <button type="submit">Save</button>
+                            </form>
+                              
                             {% endif %}</p>
                                 
                         </div>
