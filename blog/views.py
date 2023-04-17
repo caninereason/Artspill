@@ -8,7 +8,8 @@ from django.contrib.auth import get_user_model
 from .models import  Post, Comment
 from .forms import CommentForm, PostForm, EditForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from django.db import models
+import cloudinary.uploader
 
 class ProfileView(LoginRequiredMixin, View):
     template_name = 'profile.html'
@@ -35,6 +36,7 @@ class ProfileView(LoginRequiredMixin, View):
 
 
 class EditPostView(View):
+    model = Post
     form_class = PostForm
     template_name = 'post.html'
 
@@ -64,18 +66,26 @@ class PostDeleteView(View):
         
 
 
+
+
+import cloudinary.uploader
+
 class addPost(View):
+    model = Post
 
     def post(self, request, *args, **kwargs):
         form = PostForm(data=request.POST, files=request.FILES)
         form.instance.author = request.user
         form.instance.author_name = request.user.username
-      
         if form.is_valid():
-            form.save()
+            post = form.save(commit=False)
+            if 'featured_image' in request.FILES:
+                image = request.FILES['featured_image']
+                cloudinary_response = cloudinary.uploader.upload(image)
+                post.featured_image = cloudinary_response['secure_url']
+            post.save()
             return redirect('home')
         else:
-            form = PostForm()
             errormsg = 'Oops, something went wrong!'
             return render(request, "post.html", {'form': form, 'errormsg': errormsg})
 
