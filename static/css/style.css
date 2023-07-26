@@ -140,3 +140,20 @@ body {
     background: transparent;
     border: none;
 }
+
+/* edit page */
+.custom-body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-container {
+    width: 80%;
+    margin: 0 auto;
+    text-align: center; /* Add this line to center the text */
+    /* Add any other custom styles for the profile container */
+}

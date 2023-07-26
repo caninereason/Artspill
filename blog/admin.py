@@ -14,10 +14,11 @@ class PostAdmin(SummernoteModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('name', 'body','post', 'created_on', 'approved')
-    list_filter =('approved', 'created_on')
-    search_fields = ['name', 'email_address', 'body']
-    actions = ['approve_comments']
+    list_display = ('name', 'body', 'post', 'created_on')
+    list_filter = ('created_on',)
+    search_fields = ['name', 'email', 'body']
+    actions = ['delete_comments']  # Rename the action to 'delete_comments'
 
-    def approve_comments(self,request, queryset):
-        queryset.update(approved=True)
+    
+
+    

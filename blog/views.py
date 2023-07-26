@@ -11,6 +11,28 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
 import cloudinary.uploader
 
+
+
+
+class EditCommentView(LoginRequiredMixin, View):
+    template_name = 'edit_comment.html'
+
+    def get(self, request, comment_id):
+        # Retrieve the comment based on the comment_id or return 404 if not found
+        comment = get_object_or_404(Comment, id=comment_id)
+        return render(request, self.template_name, {'comment': comment})
+
+    def post(self, request, comment_id):
+        # Retrieve the comment based on the comment_id or return 404 if not found
+        comment = get_object_or_404(Comment, id=comment_id)
+
+        new_comment_text = request.POST.get('comment_text')
+        if new_comment_text:
+            comment.body = new_comment_text
+            comment.save()
+        # You may add a success message here if desired
+        return redirect('profile')
+
 class ProfileView(LoginRequiredMixin, View):
     template_name = 'profile.html'
 
@@ -21,17 +43,16 @@ class ProfileView(LoginRequiredMixin, View):
         
         # Collect all the comments for the user's posts
         comments = Comment.objects.filter(post__in=posts).order_by('-created_on')
-        
-        # Create a context dictionary that will be used to render the response
-        # The `posts` key maps to the `posts` queryset we just created
-        # The `comments` key maps to the `comments` queryset we just created
-        context = {'posts': posts, 'comments': comments}
-        
-        # Render the response using the `profile.html` template and the `context` dictionary
-        # The `request` argument is used to get the current request object
-        # The `template_name` argument is used to specify which template to use
-        # The `context` argument is used to pass data to the template
-        return render(request, self.template_name, context)
+        print(f"User: {request.user.username}")
+        print(f"Number of posts: {posts.count()}")
+        print(f"Number of comments: {comments.count()}")
+
+        # Display debug information in messages
+        messages.info(request, f"User: {request.user.username}")
+        messages.info(request, f"Number of posts: {posts.count()}")
+        messages.info(request, f"Number of comments: {comments.count()}")
+
+        return render(request, self.template_name, {'posts': posts, 'comments': comments})
 
 
 
@@ -68,7 +89,7 @@ class PostDeleteView(View):
 
 
 
-import cloudinary.uploader
+
 
 class addPost(View):
     model = Post
@@ -93,22 +114,22 @@ class addPost(View):
         form = PostForm()
         return render(request, "post.html", {'form': form})
 
-    # def edit_post(self, request, slug):
-    #     post = get_object_or_404(Post, slug=slug)
-    #     form = EditForm(request.POST or None, instance=post, initial={'title': post.title, 'comment': post.comment})
+    def edit_post(self, request, slug):
+        post = get_object_or_404(Post, slug=slug)
+        form = EditForm(request.POST or None, instance=post, initial={'title': post.title, 'comment': post.comment})
     
-    #     if form.is_valid():
-    #         form.save()
-    #     return redirect('post_detail', slug=post.slug)
-    #     return render(request, 'post.html', {'form': form, 'post': post})
+        if form.is_valid():
+            form.save()
+        return redirect('post_detail', slug=post.slug)
+        return render(request, 'post.html', {'form': form, 'post': post})
 
     
-    # def delete_post(request, pk):
-    #     post = get_object_or_404(Post, pk=pk)
-    #     if request.method == 'POST':
-    #         post.delete()
-    #         return redirect('post_list')
-    #     return render(request, "delete_post.html", {'post': post})
+    def delete_post(request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        if request.method == 'POST':
+            post.delete()
+            return redirect('post_list')
+        return render(request, "delete_post.html", {'post': post})
 
 class PostLike(View):
 
@@ -137,7 +158,7 @@ class PostDetail(View):
 
         queryset = Post.objects.filter(status=1)
         post = get_object_or_404(queryset, slug=slug)
-        comments = post.comments.filter(approved=True).order_by('-created_on')
+        comments = post.comments.order_by('-created_on')
         liked = False
         if post.likes.filter(id=self.request.user.id).exists():
             liked =True
@@ -157,7 +178,7 @@ class PostDetail(View):
 
             queryset = Post.objects.filter(status=1)
             post = get_object_or_404(queryset, slug=slug)
-            comments = post.comments.filter(approved=True).order_by('-created_on')
+            comments = post.comments.order_by('-created_on')
             liked = False
             if post.likes.filter(id=self.request.user.id).exists():
                 liked =True

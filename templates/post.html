@@ -2,16 +2,12 @@
 
 {% block content %}
 
-{% if request.user == post.author %}
+
     <form method="post" enctype="multipart/form-data">{{ form.as_p }}
-        <input type="file" name="featured_image" accept="image/*">
+        
         {% csrf_token %}
         <button type="submit">Save</button></form>
-{% else %}
+
     <h1>{{ post.title }}</h1>
-    {% if post.featured_image %}
-        <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" style="max-width:100%; height:auto;">
-    {% endif %}
-    <p>{{ post.content }}</p>
-{% endif %}
+    
 {% endblock content %}

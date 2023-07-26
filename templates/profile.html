@@ -1,29 +1,51 @@
+<!-- profile.html -->
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block content %}
-    <h1>{{ user.username }}'s Profile</h1>
-    <p>Name: {{ user.first_name }} {{ user.last_name }}</p>
-    <p>Email: {{ user.email }}</p>
+    <div class="profile-container">
+        <h1>{{ user.username }}'s Profile</h1>
+        <p>Name: {{ user.first_name }} {{ user.last_name }}</p>
+        <p>Email: {{ user.email }}</p>
 
-    <h2>Posts:</h2>
-    {% if posts %}
-        <ul>
-            {% for post in posts %}
-                <li><a href="{% url 'post_detail' slug=post.slug %}">{{ post.title }}</a></li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>{{ user.username }} has not created any posts yet.</p>
-    {% endif %}
+        <h2>Posts:</h2>
+        {% if posts %}
+            <ul>
+                {% for post in posts %}
+                    <li><a href="{% url 'post_detail' slug=post.slug %}">{{ post.title }}</a></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>{{ user.username }} has not created any posts yet.</p>
+        {% endif %}
 
-    <h2>Comments:</h2>
-    {% if comments %}
-        <ul>
-            {% for comment in comments %}
-                <li>{{ comment.text }}</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>{{ user.username }} has not commented on any posts yet.</p>
-    {% endif %}
-{% endblock content %}
+        <h2>Comments:</h2>
+        {% if comments %}
+            <ul>
+                {% for comment in comments %}
+                    <li>
+                        <strong>{{ comment.name }} ({{ comment.email }})</strong> - {{ comment.created_on }}<br>
+                        {{ comment.body }}
+                        <a href="{% url 'edit_comment' comment.id %}">Edit</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>{{ user.username }} has not commented on any posts yet.</p>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <style>
+        /* Custom CSS for profile.html */
+        .profile-container {
+            width: 80%;
+            margin: 0 auto;
+            text-align: center;
+            /* Add any other custom styles for the profile container */
+        }
+    </style>
+{% endblock %}
