@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from cloudinary.models import CloudinaryField
 from autoslug import AutoSlugField
+from django.utils.text import slugify
 STATUS = ((0, "Draft"), (1,"Published"))
 # Create your models here.
 
@@ -32,6 +33,15 @@ class Post(models.Model):
 
     def number_of_likes(self):
         return self.likes.count()
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = original_slug = slugify(self.title)
+            for i in range(1, 100):  # we assume less than 100 posts with similar title
+                if not Post.objects.filter(slug=self.slug).exists():
+                    break
+                self.slug = '{}-{}'.format(original_slug, i)
+        super().save(*args, **kwargs)
 
 class Comment(models.Model):
     post =models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
