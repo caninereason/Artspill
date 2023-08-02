@@ -54,12 +54,15 @@
                                         </form>
                                     </div>
                                     {% endif %}
+                                    {% if user.is_authenticated %}
                                     <div class="col">
                                         <form method="POST" action="{% url 'add_to_favorites' post.id %}">
                                             {% csrf_token %}
                                             <input type="submit" value="favorite">
                                         </form>
                                     </div>
+                                    {% endif %}
+                                    
                                 </div>
                             </div>
 
