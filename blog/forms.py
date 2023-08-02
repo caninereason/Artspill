@@ -14,24 +14,23 @@ class CommentForm(forms.ModelForm):
 
 class PostForm(forms.ModelForm):
     title = forms.CharField(required=True)
-    
-   
-    
-    content =forms.CharField(
-         widget=forms.widgets.Textarea(
 
+    content = forms.CharField(
+        widget=forms.widgets.Textarea(
             attrs={
-
-                "placeholder": "Express Yourself","status" : "published",
-                          }
+                "placeholder": "Express Yourself",
+                "status": "published",
+            }
         ),
         label="",
     )
-    
-
 
     class Meta:
-
         model = Post
-        
-        exclude = ("user", "author",  "likes","excerpt","slug",)
+        exclude = ("user", "author","excerpt", "likes", "slug",)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['content'].required = False  # Set excerpt as not required
+
+    
