@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
-from .models import  Post, Comment
+from .models import  Post, Comment, Favorites
 from .forms import CommentForm, PostForm, EditForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
@@ -40,7 +40,7 @@ class ProfileView(LoginRequiredMixin, View):
         # Filter the posts that belong to the currently authenticated user,
         # and order them by the `created_on` field in descending order
         posts = Post.objects.filter(author=request.user).order_by('-created_on')
-        
+        favorites = Favorites.objects.filter(user=request.user)
         # Collect all the comments for the user's posts
         comments = Comment.objects.filter(post__in=posts).order_by('-created_on')
         print(f"User: {request.user.username}")
@@ -52,7 +52,7 @@ class ProfileView(LoginRequiredMixin, View):
         messages.info(request, f"Number of posts: {posts.count()}")
         messages.info(request, f"Number of comments: {comments.count()}")
 
-        return render(request, self.template_name, {'posts': posts, 'comments': comments})
+        return render(request, self.template_name, {'posts': posts, 'favorites': favorites, 'comments': comments})
 
 
 
@@ -212,4 +212,13 @@ class PostDetail(View):
 
     
             )
+
+class AddToFavoritesView(View):
+    def post(self, request, post_id):
+        post = get_object_or_404(Post, id=post_id)
+        Favorites.objects.get_or_create(user=request.user, post=post)  # Creates a favorite, or does nothing if it already exists
+        return redirect('home')
+
+
+
     

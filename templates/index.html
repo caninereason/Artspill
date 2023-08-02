@@ -9,6 +9,7 @@
         <div class="col-12 mt-3 left">
             <div class="row">
                 {% for post in post_list %}
+
                 <div class="col-md-4">
                     <div class="card mb-4">
                         <div class="card-body">
@@ -27,24 +28,41 @@
                                 <h2 class="card-title">{{ post.title }}</h2>
                                 <p class="card-text">{{ post.excerpt }}</p>
                             </a>
-                           
+
                             <p class="card-text text-muted h6">{{ post.created_on}} <i class="far fa-heart"></i>
-                                {{ post.number_of_likes }} 
-                             
-                            {% if request.user == post.author %}
-                            <form action="{% url 'delete_post' post.slug %}" method="POST">
-                                {% csrf_token %}
-                                <input type="hidden" name="post_id" value="{{ post.pk }}">
-                                <button type="submit"><i class="fa fa-bomb"></i>
-                            </form>
-                            <form action="{% url 'edit_post' post.slug %}" method="POST">
-                                {% csrf_token %}
-                                {{ form.as_p }}
-                                <button type="submit">Edit</button>
-                            </form>
-                              
-                            {% endif %}</p>
-                                
+                                {{ post.number_of_likes }}
+                                {% with post.comments.count as total_comments %}
+                                <strong class="text-secondary"><i class="far fa-comments"></i>
+                                    <!-- Our total_comments variable goes before the closing strong tag -->
+                                    {{ total_comments }}</strong>
+                                {% endwith %}
+                            <div class="container">
+                                <div class="row">
+                                    {% if request.user == post.author %}
+                                    <div class="col">
+                                        <form action="{% url 'delete_post' post.slug %}" method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="post_id" value="{{ post.pk }}">
+                                            <button type="submit"><i class="fa fa-bomb"></i></button>
+                                        </form>
+                                    </div>
+                                    <div class="col">
+                                        <form action="{% url 'edit_post' post.slug %}" method="POST">
+                                            {% csrf_token %}
+                                            {{ form.as_p }}
+                                            <button type="submit">Edit</button>
+                                        </form>
+                                    </div>
+                                    {% endif %}
+                                    <div class="col">
+                                        <form method="POST" action="{% url 'add_to_favorites' post.id %}">
+                                            {% csrf_token %}
+                                            <input type="submit" value="favorite">
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>

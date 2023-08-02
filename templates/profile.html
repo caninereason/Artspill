@@ -19,7 +19,18 @@
         {% else %}
             <p>{{ user.username }} has not created any posts yet.</p>
         {% endif %}
+        
+    <h2>Favorites</h2>
+    {% for favorite in favorites %}
+    <div class="favorite-post">
+        <img src=" {{ favorite.post.featured_image.url }}">
+        <h2>{{ favorite.post.title }}</h2>
+        <!-- Other details about the post -->
+    </div>
 
+{% empty %}
+    <p>You haven't favorited any posts yet.</p>
+    {% endfor %}
         <h2>Comments:</h2>
         {% if comments %}
             <ul>
