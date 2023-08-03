@@ -13,6 +13,7 @@ urlpatterns = [
     path('profile', ProfileView.as_view(), name='profile'),
     path('edit_comment/<int:comment_id>/', EditCommentView.as_view(), name='edit_comment'),
     path('add_to_favorites/<int:post_id>/', views.AddToFavoritesView.as_view(), name='add_to_favorites'),
+    path('edit_user/', views.EditUserView.as_view(), name='edit_user'),
     
     # path('profile/<user>/', views.ProfileView.as_view(), name='profile'),
     # path('delete_post', views.PostDeleteView.as_view(), name='post_delete'),

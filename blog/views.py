@@ -9,10 +9,23 @@ from .models import  Post, Comment, Favorites
 from .forms import CommentForm, PostForm, EditForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
+from django.contrib.auth.forms import UserChangeForm
 import cloudinary.uploader
 
 
+class EditUserView(LoginRequiredMixin, View):
+    template_name = 'edit_user.html'
 
+    def get(self, request):
+        form = UserChangeForm(instance=request.user)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = UserChangeForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+        return render(request, self.template_name, {'form': form})
 
 class EditCommentView(LoginRequiredMixin, View):
     template_name = 'edit_comment.html'
@@ -43,15 +56,7 @@ class ProfileView(LoginRequiredMixin, View):
         favorites = Favorites.objects.filter(user=request.user)
         # Collect all the comments for the user's posts
         comments = Comment.objects.filter(post__in=posts).order_by('-created_on')
-        print(f"User: {request.user.username}")
-        print(f"Number of posts: {posts.count()}")
-        print(f"Number of comments: {comments.count()}")
-
-        # Display debug information in messages
-        messages.info(request, f"User: {request.user.username}")
-        messages.info(request, f"Number of posts: {posts.count()}")
-        messages.info(request, f"Number of comments: {comments.count()}")
-
+       
         return render(request, self.template_name, {'posts': posts, 'favorites': favorites, 'comments': comments})
 
 
