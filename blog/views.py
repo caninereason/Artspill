@@ -134,17 +134,8 @@ class addPost(View):
             return redirect('post_list')
         return render(request, "delete_post.html", {'post': post})
 
-class PostLike(View):
 
-    def post(self,request,slug, *args, **kwargs):
-        post = get_object_or_404(Post,slug=slug)
 
-        if post.likes.filter(id=request.user.id).exists():
-             post.likes.remove(request.user)
-        else:
-            post.likes.add(request.user)
-        
-        return HttpResponseRedirect(reverse('post_detail', args=[slug]))
 
 
 class PostList(generic.ListView):
@@ -152,6 +143,21 @@ class PostList(generic.ListView):
     queryset = Post.objects.filter(status=1).order_by('-created_on')
     template_name = 'index.html'
     paginate_by = 6
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+
+        # Check if the user is authenticated
+        if user.is_authenticated:
+            # If the user is authenticated, get the list of liked post IDs
+            liked_posts = Favorites.objects.filter(user=user).values_list('post__id', flat=True)
+        else:
+            # If the user is not authenticated, set liked_posts to an empty list
+            liked_posts = []
+
+        context['liked_posts'] = liked_posts
+        return context
 
     
 
@@ -216,8 +222,58 @@ class PostDetail(View):
 class AddToFavoritesView(View):
     def post(self, request, post_id):
         post = get_object_or_404(Post, id=post_id)
-        Favorites.objects.get_or_create(user=request.user, post=post)  # Creates a favorite, or does nothing if it already exists
-        return redirect('home')
+        try:
+            favorite = Favorites.objects.get(user=request.user, post=post)
+        except Favorites.DoesNotExist:
+            favorite = None
+
+        if favorite:
+            # If the post is favorited, remove it from favorites
+            favorite.delete()
+        else:
+            # If the post is not favorited, add it to favorites
+            Favorites.objects.create(user=request.user, post=post)
+
+        next_page = request.POST.get('next', '/')
+        return HttpResponseRedirect(next_page)
+
+class PostLike(View):
+
+    def post(self, request, slug, *args, **kwargs):
+        post = get_object_or_404(Post, slug=slug)
+
+        # Check if the user liked the post
+        if post.likes.filter(id=request.user.id).exists():
+            # Unlike the post if the user has already liked it
+            post.likes.remove(request.user)
+        else:
+            # Like the post if the user has not already liked it
+            post.likes.add(request.user)
+
+        # Update the number_of_likes field based on the number of users who liked the post
+        post.number_of_likes = post.likes.count()
+
+        # Check if the post is favorited by the user
+        try:
+            favorite = Favorites.objects.get(user=request.user, post=post)
+        except Favorites.DoesNotExist:
+            favorite = None
+
+        if favorite:
+            # If the post is favorited, remove it from favorites
+            favorite.delete()
+        else:
+            # If the post is not favorited, add it to favorites
+            Favorites.objects.create(user=request.user, post=post)
+
+        # Update the number_of_favorites field based on the number of users who favorited the post
+        post.number_of_favorites = Favorites.objects.filter(post=post).count()
+
+        # Save the changes to the post model
+        post.save()
+
+        # Return to the previous page (or post_detail page as a fallback)
+        return redirect(request.META.get('HTTP_REFERER', reverse('post_detail', args=[slug])))
 
 
 
