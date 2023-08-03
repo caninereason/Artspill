@@ -11,6 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
 from django.contrib.auth.forms import UserChangeForm
 import cloudinary.uploader
+from django.http import HttpResponseForbidden
 
 
 class EditUserView(LoginRequiredMixin, View):
@@ -31,13 +32,15 @@ class EditCommentView(LoginRequiredMixin, View):
     template_name = 'edit_comment.html'
 
     def get(self, request, comment_id):
-        # Retrieve the comment based on the comment_id or return 404 if not found
         comment = get_object_or_404(Comment, id=comment_id)
+        if request.user.username != comment.name:
+            return HttpResponseForbidden("You are not allowed to edit this comment.")
         return render(request, self.template_name, {'comment': comment})
 
     def post(self, request, comment_id):
-        # Retrieve the comment based on the comment_id or return 404 if not found
         comment = get_object_or_404(Comment, id=comment_id)
+        if request.user.username != comment.name:
+            return HttpResponseForbidden("You are not allowed to edit this comment.")
 
         new_comment_text = request.POST.get('comment_text')
         if new_comment_text:
@@ -55,7 +58,7 @@ class ProfileView(LoginRequiredMixin, View):
         posts = Post.objects.filter(author=request.user).order_by('-created_on')
         favorites = Favorites.objects.filter(user=request.user)
         # Collect all the comments for the user's posts
-        comments = Comment.objects.filter(post__in=posts).order_by('-created_on')
+        comments = Comment.objects.filter(name=request.user.username).order_by('-created_on')
        
         return render(request, self.template_name, {'posts': posts, 'favorites': favorites, 'comments': comments})
 
