@@ -44,9 +44,10 @@
         <ul>
             {% for comment in comments %}
                 <li>
-                    <strong>{{ comment.name }} ({{ comment.email }})</strong> - {{ comment.created_on }}<br>
-                    {{ comment.body }}
+                    <strong><a href="{% url 'post_detail' slug=comment.post.slug %}">  {{ comment.post }}<br></strong>
+                    
                     <a href="{% url 'edit_comment' comment.id %}">Edit</a>
+                    {{ comment.body }}
                 </li>
             {% endfor %}
         </ul>
