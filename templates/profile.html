@@ -14,7 +14,7 @@
             {% for post in posts %}
                 <div class="post-item">
                     <a href="{% url 'post_detail' slug=post.slug %}">
-                        <img class="post-image" src="{{ post.featured_image.url }}">
+                        <img class="post-image" src="{{ post.featured_image.url }}" alt="">
                         
                     </a>
                 </div>
@@ -29,7 +29,7 @@
         {% for favorite in favorites %}
         <div class="favorite-item">
             <a href="{% url 'post_detail' slug=favorite.post.slug %}">
-                <img class="favorite-image" src="{{ favorite.post.featured_image.url }}">
+                <img class="favorite-image" src="{{ favorite.post.featured_image.url }}" alt="">
                 
                 <!-- Other details about the post -->
             </a>
