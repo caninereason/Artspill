@@ -56,7 +56,7 @@
         <div class="col-md-6 ">
             <!-- The featured image URL goes in the src attribute -->
             {% if "placeholder" in post.featured_image.url %}
-            <img src="https://codeinstitute.s3.amazonaws.com/fullstack/blog/default.jpg" >
+            <img src="https://codeinstitute.s3.amazonaws.com/fullstack/blog/default.jpg" alt ="">
             {% else %}
             <img src="{{ post.featured_image.url }}" >
             {% endif %}
