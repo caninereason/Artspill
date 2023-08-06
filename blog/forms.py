@@ -4,7 +4,7 @@ from django import forms
 class EditForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'content',]
+        fields = ['title', 'content','featured_image',]
 
 
 class CommentForm(forms.ModelForm):

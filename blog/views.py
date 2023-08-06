@@ -11,6 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
 from django.contrib.auth.forms import UserChangeForm
 import cloudinary.uploader
+from cloudinary.uploader import upload
 from django.http import HttpResponseForbidden
 
 
@@ -46,7 +47,7 @@ class EditCommentView(LoginRequiredMixin, View):
         if new_comment_text:
             comment.body = new_comment_text
             comment.save()
-        # You may add a success message here if desired
+        
         return redirect('profile')
 
 class ProfileView(LoginRequiredMixin, View):
@@ -66,15 +67,24 @@ class ProfileView(LoginRequiredMixin, View):
 
 class EditPostView(View):
     model = Post
-    form_class = PostForm
+    form_class = EditForm  
     template_name = 'post.html'
 
-    
+    def get(self, request, slug, *args, **kwargs):
+        post = get_object_or_404(Post, slug=slug)
+        form = self.form_class(instance=post)
+        if request.user.username != post.author.username:
+            return HttpResponseForbidden("You are not allowed to edit this post.")
+        return render(request, self.template_name, {'form': form, 'post': post})
 
     def post(self, request, slug, *args, **kwargs):
         post = get_object_or_404(Post, slug=slug)
-        form = self.form_class(request.POST or None, instance=post)
+        form = self.form_class(request.POST, request.FILES, instance=post)
         if form.is_valid():
+            if 'featured_image' in request.FILES:
+                image = request.FILES['featured_image']
+                cloudinary_response = upload(image)
+                post.featured_image = cloudinary_response['secure_url']
             form.save()
             return redirect('post_detail', slug=post.slug)
         else:

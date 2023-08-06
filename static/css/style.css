@@ -174,3 +174,34 @@ body {
     height: 150px; /* Adjust as necessary */
     object-fit: cover; /* This will make sure your images are always contained in the space without stretching or squishing */
 }
+css
+Copy code
+.btn {
+    padding: 5px;
+}
+
+.btn-primary {
+    background-color: #ffffff;
+    border-color: #ffffff;
+    color: rgb(0, 0, 0);
+}
+
+.btn-danger {
+    background-color: #ffffff;
+    border-color: #ffffff;
+    color: rgb(255, 0, 0);
+}
+
+/* For screens smaller than 768px */
+@media (max-width: 767px) {
+    .btn {
+        padding: 10px;
+        width: auto; /* Let the button size adjust according to its content */
+        display: block; /* Stack buttons vertically */
+        margin-bottom: 10px; /* Add space between vertically stacked buttons */
+    }
+
+    .btn-primary {
+        margin-right: 0; /* Remove the right margin for small screens */
+    }
+}
