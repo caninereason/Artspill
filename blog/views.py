@@ -123,7 +123,7 @@ class addPost(View):
                 cloudinary_response = cloudinary.uploader.upload(image)
                 post.featured_image = cloudinary_response['secure_url']
             post.save()
-            return redirect('post_detail', slug=post.slug)  # Here, add the slug argument
+            return redirect('post_detail', slug=post.slug)  
         else:
             errormsg = 'Oops, something went wrong!'
             return render(request, "post.html", {'form': form, 'errormsg': errormsg})

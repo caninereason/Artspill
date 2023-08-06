@@ -56,9 +56,9 @@
         <div class="col-md-6 ">
             <!-- The featured image URL goes in the src attribute -->
             {% if "placeholder" in post.featured_image.url %}
-            <img src="https://codeinstitute.s3.amazonaws.com/fullstack/blog/default.jpg" width="100%">
+            <img src="https://codeinstitute.s3.amazonaws.com/fullstack/blog/default.jpg" >
             {% else %}
-            <img src="{{ post.featured_image.url }}" width="100%">
+            <img src="{{ post.featured_image.url }}" >
             {% endif %}
         </div>
         
@@ -95,7 +95,7 @@
                 </p>
                 <div class="row">
                     <div class="col-1">
-                        
+                    </div>   
                 </div>
             </div>
         </div>
