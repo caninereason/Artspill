@@ -19,9 +19,9 @@ TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['Newspill.herokuapp.com', 'localhost', '127.0.0.1', 'ns-incomplete.herokuapp.com',]
+ALLOWED_HOSTS = ['artspill-876968932494.herokuapp.com', 'localhost', '127.0.0.1', 'ns-incomplete.herokuapp.com',]
 
 
 # Application definition
