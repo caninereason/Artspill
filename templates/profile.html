@@ -15,7 +15,7 @@
                 <div class="post-item">
                     <a href="{% url 'post_detail' slug=post.slug %}">
                         <img class="post-image" src="{{ post.featured_image.url }}">
-                        <p>{{ post.title }}</p>
+                        
                     </a>
                 </div>
             {% endfor %}
@@ -30,7 +30,7 @@
         <div class="favorite-item">
             <a href="{% url 'post_detail' slug=favorite.post.slug %}">
                 <img class="favorite-image" src="{{ favorite.post.featured_image.url }}">
-                <h2>{{ favorite.post.title }}</h2>
+                
                 <!-- Other details about the post -->
             </a>
         </div>
