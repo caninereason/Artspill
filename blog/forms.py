@@ -19,7 +19,7 @@ class PostForm(forms.ModelForm):
         widget=forms.widgets.Textarea(
             attrs={
                 "placeholder": "Express Yourself",
-                "status": "published",
+                
             }
         ),
         label="",
